@@ -1,0 +1,19 @@
+:root {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  --el-color-primary: #409EFF;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+/* 移除默认的 button 样式，交给 Element Plus */
+/* 移除默认的 a 标签样式，交给 Element Plus 或具体组件 */

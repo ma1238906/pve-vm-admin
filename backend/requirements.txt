@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+proxmoxer
+websockets
+httpx
+sqlalchemy
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+requests

@@ -1,0 +1,35 @@
+# Python backend
+backend/venv/
+backend/**/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.coverage
+backend/coverage.xml
+backend/*.log
+backend/.env
+backend/pve_vdi.db
+
+# Node/Vite frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.eslintcache
+frontend/.env
+frontend/.env.local
+frontend/*.log
+frontend/public/novnc/
+
+# Root env
+.env
+
+# IDE/OS
+.vscode/
+.idea/
+*.iml
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Misc
+*.tmp
+*.swp
