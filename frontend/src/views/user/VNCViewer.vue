@@ -30,9 +30,16 @@ const connect = async () => {
         const wsPort = '8000'
         const wsPath = `api/v1/vms/ws/vncproxy/${props.node}/${props.vmid}?ticket=${encodeURIComponent(ticket)}&port=${port}`
         
-        // Construct Iframe URL to local noVNC
-        // Switch to vnc.html for full UI (toolbar, keys, etc.) instead of vnc_lite.html
-        vncUrl.value = `/novnc/vnc.html?host=${wsHost}&port=${wsPort}&path=${encodeURIComponent(wsPath)}&password=${password || ''}&autoconnect=true&resize=scale`
+        // Construct Iframe URL to local noVNC with robust encoding
+        const params = new URLSearchParams({
+            host: wsHost,
+            port: wsPort,
+            path: wsPath,
+            password: password || '',
+            autoconnect: 'true',
+            resize: 'scale'
+        })
+        vncUrl.value = `/novnc/vnc.html?${params.toString()}`
         
         loading.value = false
 
