@@ -3,6 +3,7 @@
     <el-header class="user-header">
       <div class="logo">PVE VDI</div>
       <div class="header-right">
+        <el-button v-if="authStore.isAdmin" type="text" @click="router.push('/admin')">管理后台</el-button>
         <span>{{ authStore.user?.username }}</span>
         <el-button type="text" @click="logout">Logout</el-button>
       </div>

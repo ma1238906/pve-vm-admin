@@ -37,7 +37,8 @@ const connect = async () => {
             path: wsPath,
             password: password || '',
             autoconnect: 'true',
-            resize: 'scale'
+            resize: 'scale',
+            shared: 'true'
         })
         vncUrl.value = `/novnc/vnc.html?${params.toString()}`
         

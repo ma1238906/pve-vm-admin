@@ -25,19 +25,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import request from '../../api/request'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useAuthStore } from '../../stores/auth'
 
 const vms = ref([])
 const router = useRouter()
+const authStore = useAuthStore()
+let pollTimer = null
 
 const fetchData = async () => {
+  if (!authStore.token) return
   try {
     vms.value = await request.get('/vms/')
   } catch (error) {
-    ElMessage.error('Failed to fetch VMs')
+    // Suppress error on unauthenticated redirects
+    if (error?.response?.status !== 401) {
+      ElMessage.error('Failed to fetch VMs')
+    }
   }
 }
 
@@ -69,7 +76,14 @@ const formatUptime = (seconds) => {
 onMounted(() => {
   fetchData()
   // Poll status
-  setInterval(fetchData, 10000)
+  pollTimer = setInterval(fetchData, 10000)
+})
+
+onUnmounted(() => {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
 })
 </script>
 

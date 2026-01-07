@@ -70,25 +70,21 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
-  } else if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    next('/') // Redirect non-admin to user portal
-  } else {
-    // Ensure user profile is loaded
-    if (authStore.isAuthenticated && !authStore.user) {
-        try {
-            await authStore.fetchUser()
-             if (to.meta.requiresAdmin && !authStore.isAdmin) {
-                next('/')
-             } else {
-                next()
-             }
-        } catch {
-            next('/login')
-        }
-    } else {
-        next()
+    return
+  }
+  if (authStore.isAuthenticated && !authStore.user) {
+    try {
+      await authStore.fetchUser()
+    } catch {
+      next('/login')
+      return
     }
   }
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    next('/')
+    return
+  }
+  next()
 })
 
 export default router
