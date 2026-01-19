@@ -55,7 +55,7 @@ class PVEService:
         params = {
             'newid': newid,
             'name': name,
-            'full': 1 # Full clone
+            'full': 0
         }
         if target_node:
             params['target'] = target_node

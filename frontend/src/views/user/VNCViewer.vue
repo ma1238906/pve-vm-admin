@@ -38,7 +38,6 @@ const connect = async () => {
             password: password || '',
             autoconnect: 'true',
             resize: 'scale',
-            shared: 'true'
         })
         vncUrl.value = `/novnc/vnc.html?${params.toString()}`
         

@@ -17,6 +17,8 @@ This project is a Proxmox VE Virtual Desktop Infrastructure system with a Python
 
 ### Backend
 
+0. 准备python环境（建议使用virtualenv、conda、uv等等）
+   
 1. Navigate to `backend` directory:
    ```bash
    cd backend
@@ -37,20 +39,20 @@ This project is a Proxmox VE Virtual Desktop Infrastructure system with a Python
 
 ### Frontend
 
-0. 从GitHub下载novnc源码放到`frontend/public/novnc/`目录下
+1. 从GitHub下载novnc源码放到`frontend/public/novnc/`目录下
    ```bash
    git clone https://github.com/novnc/noVNC.git frontend/public/novnc/
    ```
 
-1. Navigate to `frontend` directory:
+2. Navigate to `frontend` directory:
    ```bash
    cd frontend
    ```
-2. Install dependencies:
+3. Install dependencies:
    ```bash
    npm install
    ```
-3. Run Development Server:
+4. Run Development Server:
    ```bash
    npm run dev
    ```
