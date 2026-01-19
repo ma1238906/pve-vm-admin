@@ -202,6 +202,13 @@ def list_vms(
                 # Normal: Synced
                 pve_info = pve_vms_map[vmid]
                 db_info = db_vms_map[vmid]
+                template_flag = bool(pve_info.get('template'))
+                ip_addr = None
+                if pve_info.get('status') == 'running':
+                    try:
+                        ip_addr = pve_service.get_vm_ip(db_info.node, vmid)
+                    except Exception:
+                        ip_addr = None
                 vm_detail = vm_schema.VMDetail(
                     id=db_info.id,
                     vmid=vmid,
@@ -212,6 +219,8 @@ def list_vms(
                     cpu=pve_info.get('cpu', 0),
                     maxmem=pve_info.get('maxmem', 0),
                     uptime=pve_info.get('uptime', 0),
+                    template=template_flag,
+                    ip=ip_addr,
                     sync_status='ok'
                 )
             elif in_pve and not in_db:
@@ -219,6 +228,13 @@ def list_vms(
                 pve_info = pve_vms_map[vmid]
                 # Filter out templates from the main list if desired, but user asked for all VMs.
                 # Usually templates are hidden from "Running VMs" list, but let's include them with status.
+                template_flag = bool(pve_info.get('template'))
+                ip_addr = None
+                if pve_info.get('status') == 'running':
+                    try:
+                        ip_addr = pve_service.get_vm_ip(pve_info.get('node', ''), vmid)
+                    except Exception:
+                        ip_addr = None
                 vm_detail = vm_schema.VMDetail(
                     id=None, # No DB ID
                     vmid=vmid,
@@ -229,6 +245,8 @@ def list_vms(
                     cpu=pve_info.get('cpu', 0),
                     maxmem=pve_info.get('maxmem', 0),
                     uptime=pve_info.get('uptime', 0),
+                    template=template_flag,
+                    ip=ip_addr,
                     sync_status='orphan'
                 )
             elif in_db and not in_pve:
@@ -244,6 +262,8 @@ def list_vms(
                     cpu=0,
                     maxmem=0,
                     uptime=0,
+                    template=False,
+                    ip=None,
                     sync_status='missing'
                 )
             
@@ -256,7 +276,10 @@ def list_vms(
         # OR we could reuse the bulk fetch if we assume the list is small.
         # Let's keep original logic for users but safer.
         for vm_db in db_vms:
-             try:
+            try:
+                # Skip templates for user portal
+                if pve_service.is_vm_template(vm_db.node, vm_db.vmid):
+                    continue
                 status = pve_service.get_vm_status(vm_db.node, vm_db.vmid)
                 vm_detail = vm_schema.VMDetail(
                     id=vm_db.id,
@@ -268,12 +291,14 @@ def list_vms(
                     cpu=status.get('cpu', 0),
                     maxmem=status.get('maxmem', 0),
                     uptime=status.get('uptime', 0),
+                    template=False,
+                    ip=None,
                     sync_status='ok'
                 )
                 results.append(vm_detail)
-             except:
-                 # Missing in PVE
-                 vm_detail = vm_schema.VMDetail(
+            except Exception:
+                # Missing in PVE
+                vm_detail = vm_schema.VMDetail(
                     id=vm_db.id,
                     vmid=vm_db.vmid,
                     node=vm_db.node,
@@ -283,9 +308,11 @@ def list_vms(
                     cpu=0,
                     maxmem=0,
                     uptime=0,
+                    template=False,
+                    ip=None,
                     sync_status='missing'
                 )
-                 results.append(vm_detail)
+                results.append(vm_detail)
 
     return results
 

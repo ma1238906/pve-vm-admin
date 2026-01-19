@@ -9,6 +9,12 @@
       <el-table-column prop="vmid" label="VM ID" width="100" sortable />
       <el-table-column prop="name" label="名称" sortable />
       <el-table-column prop="node" label="节点" width="120" sortable />
+      <el-table-column prop="template" label="模板" width="100">
+        <template #default="scope">
+          <el-tag v-if="scope.row.template" type="info">模板</el-tag>
+          <span v-else>普通</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="120">
         <template #default="scope">
           <el-tag :type="getStatusType(scope.row.status)">{{ formatStatus(scope.row.status) }}</el-tag>
@@ -21,14 +27,17 @@
              <span v-else>{{ getUserName(scope.row.owner_id) }}</span>
           </template>
       </el-table-column>
-      <el-table-column label="资源使用" width="180">
-          <template #default="scope">
-             <div v-if="scope.row.status === 'running'">
-                 <div>CPU: {{ (scope.row.cpu * 100).toFixed(1) }}%</div>
-                 <div>Mem: {{ (scope.row.maxmem > 0 ? scope.row.maxmem / 1024 / 1024 / 1024 : 0).toFixed(1) }} GB</div>
-             </div>
-             <div v-else>-</div>
-          </template>
+      <el-table-column label="资源使用" width="220">
+        <template #default="scope">
+          <div>
+            <div v-if="scope.row.status === 'running'">
+              <div>CPU: {{ (scope.row.cpu * 100).toFixed(1) }}%</div>
+              <div>Mem: {{ (scope.row.maxmem > 0 ? scope.row.maxmem / 1024 / 1024 / 1024 : 0).toFixed(1) }} GB</div>
+            </div>
+            <div v-else>-</div>
+            <div>IP: {{ scope.row.ip || '-' }}</div>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="操作" width="300" fixed="right">
         <template #default="scope">

@@ -28,5 +28,7 @@ class VMDetail(VM):
     cpu: float = 0
     maxmem: int = 0
     uptime: int = 0
+    template: bool = False
+    ip: Optional[str] = None
     # Sync status: 'ok', 'orphan' (pve only), 'missing' (db only)
     sync_status: str = 'ok' 

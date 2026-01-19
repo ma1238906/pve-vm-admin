@@ -50,6 +50,38 @@ class PVEService:
     def get_vm_status(self, node: str, vmid: int):
         return self.proxmox.nodes(node).qemu(vmid).status.current.get()
 
+    def is_vm_template(self, node: str, vmid: int) -> bool:
+        try:
+            config = self.proxmox.nodes(node).qemu(vmid).config.get()
+        except Exception:
+            return False
+        return bool(config.get('template'))
+
+    def get_vm_ip(self, node: str, vmid: int):
+        try:
+            data = self.proxmox.nodes(node).qemu(vmid).agent.post('network-get-interfaces')
+        except Exception:
+            return None
+
+        result = None
+        if isinstance(data, dict):
+            if 'result' in data:
+                result = data.get('result') or []
+            elif 'data' in data and isinstance(data['data'], dict):
+                result = data['data'].get('result') or []
+        if not result:
+            return None
+
+        for iface in result:
+            if iface.get('name') == 'lo':
+                continue
+            for addr in iface.get('ip-addresses', []):
+                if addr.get('ip-address-type') == 'ipv4':
+                    ip = addr.get('ip-address')
+                    if ip and not ip.startswith('127.'):
+                        return ip
+        return None
+
     def clone_vm(self, node: str, vmid: int, newid: int, name: str, target_node: str = None):
         # Clone from template
         params = {
