@@ -70,3 +70,11 @@ This project is a Proxmox VE Virtual Desktop Infrastructure system with a Python
 - **User Portal**:
     - "My Desktop" view.
     - Integrated noVNC client for browser-based access.
+
+## screenshot
+![screenshot](./images/仪表盘.jpg)
+![screenshot](./images/用户管理.jpg)
+![screenshot](./images/虚拟机管理.jpg)
+![screenshot](./images/虚拟机列表.jpg)
+![screenshot](./images/novnc.jpg)
+
