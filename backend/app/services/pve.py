@@ -57,6 +57,13 @@ class PVEService:
             return False
         return bool(config.get('template'))
 
+    def get_vm_ostype(self, node: str, vmid: int) -> str:
+        try:
+            config = self.proxmox.nodes(node).qemu(vmid).config.get()
+            return config.get('ostype', 'other')
+        except Exception:
+            return 'other'
+
     def get_vm_ip(self, node: str, vmid: int):
         try:
             data = self.proxmox.nodes(node).qemu(vmid).agent.post('network-get-interfaces')

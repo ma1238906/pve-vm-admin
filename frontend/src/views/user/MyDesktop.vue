@@ -4,7 +4,11 @@
       <el-col :span="6" v-for="vm in vms" :key="vm.id">
         <el-card class="vm-card" :body-style="{ padding: '0px' }">
           <div class="vm-image" @click="connectVM(vm)">
-            <div class="os-icon">🖥️</div>
+            <div class="os-icon">
+                <img v-if="isWindows(vm.os_type)" src="/os-icons/windows.png" alt="Windows" class="os-img" />
+                <img v-else-if="isLinux(vm.os_type)" src="/os-icons/linux.png" alt="Linux" class="os-img" />
+                <img v-else src="/os-icons/other.png" alt="Other" class="os-img" />
+            </div>
             <div class="vm-status" :class="vm.status"></div>
           </div>
           <div style="padding: 14px">
@@ -71,6 +75,16 @@ const formatUptime = (seconds) => {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     return `${h}h ${m}m`
+}
+
+const isWindows = (osType) => {
+    if (!osType) return false
+    return osType.startsWith('w') || osType.startsWith('win')
+}
+
+const isLinux = (osType) => {
+    if (!osType) return false
+    return ['l26', 'l24'].includes(osType) || osType.includes('linux')
 }
 
 onMounted(() => {
@@ -141,5 +155,10 @@ onUnmounted(() => {
     0% { opacity: 0.6; }
     50% { opacity: 1; }
     100% { opacity: 0.6; }
+}
+.os-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
 }
 </style>
